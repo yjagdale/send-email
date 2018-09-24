@@ -7,7 +7,7 @@ import javax.mail.internet.*;
 
 public class EmailUtils {
     private static String USER_NAME = "correlation.jenkins";  // GMail user name (just the part before "@gmail.com")
-    private static String PASSWORD = "tprhbsspeohqqfcn"; // GMail password
+    private static String PASSWORD = "********"; // GMail password
     private static String RECIPIENT = "yjagdale@qualys.com";
     private static String HOST = "smtp.gmail.com";
 
