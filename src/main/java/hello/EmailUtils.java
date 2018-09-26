@@ -6,12 +6,9 @@ import javax.mail.*;
 import javax.mail.internet.*;
 
 public class EmailUtils {
-    private static String USER_NAME = "correlation.jenkins";  // GMail user name (just the part before "@gmail.com")
-    private static String PASSWORD = "********"; // GMail password
-    private static String RECIPIENT = "yjagdale@qualys.com";
     private static String HOST = "smtp.gmail.com";
 
-    private static Properties setProperties() {
+    private static Properties setProperties(String USER_NAME, String PASSWORD) {
         Properties props = System.getProperties();
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", HOST);
@@ -19,7 +16,6 @@ public class EmailUtils {
         props.put("mail.smtp.password", PASSWORD);
         props.put("mail.smtp.port", "587");
         props.put("mail.smtp.auth", "true");
-
         return props;
     }
 
@@ -28,12 +24,13 @@ public class EmailUtils {
         String[]  to  = emailDetails.getTo();
         String subject = emailDetails.getSubject();
         String body = emailDetails.getBody();
-        Session session = Session.getDefaultInstance(setProperties());
+        String USER_NAME = emailDetails.getUserName();
+        String PASSWORD = emailDetails.getPassword();
+        Session session = Session.getDefaultInstance(setProperties(USER_NAME, PASSWORD));
         MimeMessage message = new MimeMessage(session);
 
         try {
             message.setFrom(new InternetAddress("Qualys Jenkins<correlation.jenkins@qualys.com>"));
-
             InternetAddress[] toAddress = new InternetAddress[to.length];
 
             // To get the array of addresses
@@ -46,7 +43,7 @@ public class EmailUtils {
             }
 
             message.setSubject(subject);
-            message.setText(body);
+            message.setContent(body, "text/html; charset=utf-8");
             Transport transport = session.getTransport("smtp");
             transport.connect(HOST, USER_NAME, PASSWORD);
             transport.sendMessage(message, message.getAllRecipients());
